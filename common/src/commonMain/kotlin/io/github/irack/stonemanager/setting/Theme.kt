@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.setting
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape

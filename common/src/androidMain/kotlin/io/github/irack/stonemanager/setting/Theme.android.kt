@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.setting
 
 import android.app.Activity
 import android.os.Build

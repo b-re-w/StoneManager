@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.setting
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme

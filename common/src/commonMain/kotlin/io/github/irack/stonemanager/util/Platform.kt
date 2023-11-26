@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.util
 
 interface Platform {
     val name: String

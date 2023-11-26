@@ -1,10 +1,8 @@
-package io.github.irack.stonemanager
-
-import java.util.*
+package io.github.irack.stonemanager.util
 
 
 class DesktopPlatform : Platform {
-    private val os = System.getProperty("os.name").lowercase(Locale.getDefault())
+    private val os = System.getProperty("os.name").lowercase(java.util.Locale.getDefault())
     private val version = System.getProperty("java.version")
     override val name: String = "JVM $version Desktop on ${getSystem()}"
 

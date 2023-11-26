@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.util
 
 import platform.UIKit.UIDevice
 

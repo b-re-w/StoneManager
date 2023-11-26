@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager
+package io.github.irack.stonemanager.util
 
 class Greeting {
     private val platform: Platform = getPlatform()
