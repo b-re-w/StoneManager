@@ -5,9 +5,6 @@ plugins {
     alias(libs.plugins.jetpack.compose)
 }
 
-group = "io.github.irack.stonemanager"
-version = "1.0-SNAPSHOT"
-
 kotlin {
     jvm {
         compilations.all {
@@ -50,8 +47,23 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "common"
+            packageName = "STONE Manager"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("icon.icns"))
+                installationPath = "/Applications/StoneManager"
+                bundleID = "io.github.irack.stonemanager.desktop"
+            }
+            windows {
+                iconFile.set(project.file("icon.ico"))
+                dirChooser = true
+                installationPath = "C:\\Program Files\\StoneManager"
+                perUserInstall = true
+            }
+            linux {
+                iconFile.set(project.file("icon.png"))
+                installationPath = "/usr/local/bin/stonemanager"
+            }
         }
     }
 }
