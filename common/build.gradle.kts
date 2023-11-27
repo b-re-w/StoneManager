@@ -41,6 +41,7 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
+                implementation(libs.skiko.common)
             }
         }
         val commonTest by getting {
@@ -52,11 +53,13 @@ kotlin {
             dependencies {
                 api(libs.androidx.appcompat)
                 api(libs.androidx.core)
+                api(libs.androidx.core.ktx)
             }
         }
         val desktopMain by getting {
             dependencies {
                 api(compose.preview)
+                implementation("io.ultreia:bluecove:2.1.1")
             }
         }
         val desktopTest by getting
