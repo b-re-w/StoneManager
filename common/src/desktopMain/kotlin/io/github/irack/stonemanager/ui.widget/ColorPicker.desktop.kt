@@ -56,16 +56,24 @@ actual fun getHuePositioningFuntion(huePanel: Any): (Float) -> Float {
 
 actual fun getSaturationValueShader(rgb: Int, satValPanel: Any): Pair<Any, Any> {
     val satValPanel = satValPanel as Rect
-    val startColor = listOf(Color(-0x1))
     val satShader =  LinearGradientShader(
         Offset(satValPanel.left, satValPanel.top), Offset(satValPanel.right, satValPanel.top),
-        startColor, listOf(rgb.toFloat()), TileMode.Clamp
+        listOf(Color(-0x1), Color(rgb)), null, TileMode.Clamp
     )
     val valShader =  LinearGradientShader(
         Offset(satValPanel.left, satValPanel.top), Offset(satValPanel.left, satValPanel.bottom),
-        startColor, listOf((-0x1000000).toFloat()), TileMode.Clamp
+        listOf(Color(0x7FFFFFFF), Color(0xFF000000)), null, TileMode.Clamp
     )
     return Pair(satShader, valShader)
+}
+
+fun Int.addAlphaToRGB(alpha: Int): Int {
+    val red = (this shr 16) and 0xFF
+    val green = (this shr 8) and 0xFF
+    val blue = this and 0xFF
+
+    val rgba = (red shl 24) or (green shl 16) or (blue shl 8) or (alpha and 0xFF)
+    return rgba
 }
 
 actual fun drawRoundRect(
@@ -76,7 +84,6 @@ actual fun drawRoundRect(
     val satValPanel = satValPanel as Rect
     val satShader = satShader as Shader
     val valShader = valShader as Shader
-    val shaderPaint = Paint()
 
     canvas.drawRoundRect(
         satValPanel.left,

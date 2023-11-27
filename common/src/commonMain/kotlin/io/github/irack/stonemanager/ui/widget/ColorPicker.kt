@@ -55,6 +55,9 @@ fun ColorPicker(
 
         SaturationValuePanel(
             hue = hsv.value.first,
+            modifier = Modifier,
+            height = 300.dp,
+            width = 300.dp,
             setSatVal = { sat, value ->
                 hsv.value = Triple(hsv.value.first, sat, value)
             }
@@ -63,6 +66,7 @@ fun ColorPicker(
         Spacer(modifier = Modifier.height(32.dp))
 
         HueBar(
+            modifier = Modifier.width(300.dp),
             initColor = initialHSV[0],
             setColor = { hue ->
                 hsv.value = Triple(hue, hsv.value.second, hsv.value.third)
