@@ -1,0 +1,9 @@
+[submodule "lib/ComposeColorPicker"]
+	path = lib/ComposeColorPicker
+	url = https://github.com/IRACK000/ComposeColorPicker.git
+[submodule "lib/FilledSliderCompose"]
+	path = lib/FilledSliderCompose
+	url = https://github.com/IRACK000/FilledSliderCompose.git
+[submodule "lib/compose-neumorphism"]
+	path = lib/compose-neumorphism
+	url = https://github.com/IRACK000/compose-neumorphism.git

@@ -36,6 +36,8 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$version")
                 api(compose.preview)
+                implementation("io.ultreia:bluecove:2.1.1")
+                implementation(project(":lib:FilledSliderCompose:filled-slider-compose"))
             }
         }
         val jvmTest by getting

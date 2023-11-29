@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.abhilash.apps.composecolorpicker.ColorPicker
 import io.github.irack.stonemanager.App
-import io.github.irack.stonemanager.ui.widget.ColorPicker
 
 
 class MainActivity : ComponentActivity() {

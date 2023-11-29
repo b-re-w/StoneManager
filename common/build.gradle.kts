@@ -42,6 +42,8 @@ kotlin {
                 api(compose.materialIconsExtended)
                 api(compose.material3)
                 implementation(libs.skiko.common)
+                api(project(":lib:ComposeColorPicker:colorpicker"))
+                api(project(":lib:FilledSliderCompose:filled-slider-compose"))
             }
         }
         val commonTest by getting {

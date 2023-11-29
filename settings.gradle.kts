@@ -30,3 +30,5 @@ rootProject.name = "Stone_Manager"
 include(":android")
 include(":desktop")
 include(":common")
+include(":lib:ComposeColorPicker:colorpicker")
+include(":lib:FilledSliderCompose:filled-slider-compose")
