@@ -44,6 +44,7 @@ kotlin {
                 implementation(libs.skiko.common)
                 api(project(":lib:ComposeColorPicker:colorpicker"))
                 api(project(":lib:FilledSliderCompose:filled-slider-compose"))
+                api(project(":lib:compose-neumorphism:neumorphic"))
             }
         }
         val commonTest by getting {
