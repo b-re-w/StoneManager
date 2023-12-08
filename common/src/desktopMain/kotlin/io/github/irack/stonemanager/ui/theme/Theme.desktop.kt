@@ -1,10 +1,8 @@
-package io.github.irack.stonemanager.setting
+package io.github.irack.stonemanager.ui.theme
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -15,7 +13,7 @@ actual fun AppTheme(
     dynamicColor: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
+    val colorScheme = if (darkTheme) colorDark else colorLight
     MaterialTheme(
         colorScheme = colorScheme,
         typography = typography,
@@ -23,7 +21,7 @@ actual fun AppTheme(
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = colorScheme.background,
+            color = MaterialTheme.colorScheme.background,
             content = content
         )
     }
