@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager.resource
+package io.github.irack.stonemanager.resource.localization
 
 object KoKrString: LocalizedString() {
     override val locale = "ko-KR"

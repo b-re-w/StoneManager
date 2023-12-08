@@ -1,4 +1,4 @@
-package io.github.irack.stonemanager.resource
+package io.github.irack.stonemanager.resource.localization
 
 import io.github.irack.stonemanager.util.Locale
 
