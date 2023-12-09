@@ -1,10 +1,20 @@
 package io.github.irack.stonemanager.ui.theme
 
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import dev.icerock.moko.resources.compose.fontFamilyResource
 import io.github.irack.stonemanager.MR
@@ -22,3 +32,81 @@ val typography
         fontSize = 16.sp
     )
 )
+
+
+@Composable
+fun HeadText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onPrimary,
+    fontSize: TextUnit = headTextFontSize,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight = FontWeight.SemiBold,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = LocalTextStyle.current
+) {
+    Text(
+        text, modifier, color, fontSize, fontStyle, fontWeight, letterSpacing,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout, style
+    )
+}
+
+
+@Composable
+fun BodyText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onBackground,
+    fontSize: TextUnit = bodyTextFontSize,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight = FontWeight.SemiBold,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = LocalTextStyle.current
+) {
+    Text(
+        text, modifier, color, fontSize, fontStyle, fontWeight, letterSpacing,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout, style
+    )
+}
+
+
+@Composable
+fun StatusText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onPrimary,
+    fontSize: TextUnit = statusTextFontSize,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight = FontWeight.SemiBold,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = LocalTextStyle.current
+) {
+    Text(
+        text, modifier, color, fontSize, fontStyle, fontWeight, letterSpacing,
+        textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout, style
+    )
+}
