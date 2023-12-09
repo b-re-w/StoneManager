@@ -4,6 +4,6 @@ import platform.Foundation.NSLocale
 import platform.Foundation.preferredLanguages
 
 
-actual fun getCurrentLanguage(): String {
+internal actual fun getCurrentLanguage(): String {
     return NSLocale.preferredLanguages[0] as String
 }
