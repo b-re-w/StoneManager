@@ -70,3 +70,47 @@ fun NeuEffectButton(
         )
     }
 }
+
+
+@Composable
+fun NeuPulsateEffectFlatButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    animation: ClickAnimation = ClickAnimation(1f, 0.96f),
+    shape: Shape = defaultCornerRoundShape,
+    neuShape: CornerShape = defaultCornerNeuShape,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = PaddingValues(8.dp, 12.dp),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
+    PulsateEffectButton(
+        onClick = onClick,
+        modifier = modifier
+            .neu(
+                lightShadowColor = appColorSet.lightShadow,
+                darkShadowColor = appColorSet.darkShadow,
+                shadowElevation = defaultNeuElevation,
+                lightSource = LightSource.LEFT_TOP,
+                shape = Flat(neuShape)
+            ),
+        enabled = enabled,
+        animation = animation,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource
+    ) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            content = content
+        )
+    }
+}
