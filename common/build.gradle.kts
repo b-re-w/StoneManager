@@ -46,6 +46,7 @@ kotlin {
                 api(libs.kotlin.serialization)
                 api(libs.skiko.common)
                 api(libs.moko.resources)
+                api(libs.kmlogging)
                 api(project(":lib:ComposeColorPicker:colorpicker"))
                 api(project(":lib:FilledSliderCompose:filled-slider-compose"))
                 api(project(":lib:compose-neumorphism:neumorphic"))
