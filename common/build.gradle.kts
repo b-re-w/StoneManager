@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetpack.compose)
+    alias(libs.plugins.moko.resources)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -41,7 +42,8 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
-                implementation(libs.skiko.common)
+                api(libs.skiko.common)
+                api(libs.moko.resources)
                 api(project(":lib:ComposeColorPicker:colorpicker"))
                 api(project(":lib:FilledSliderCompose:filled-slider-compose"))
                 api(project(":lib:compose-neumorphism:neumorphic"))
@@ -58,6 +60,7 @@ kotlin {
                 api(libs.androidx.core)
                 api(libs.androidx.core.ktx)
             }
+            dependsOn(commonMain)
         }
         val desktopMain by getting {
             dependencies {
@@ -85,4 +88,9 @@ android {
     defaultConfig {
         minSdk = 24
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "io.github.irack.stonemanager"
+    multiplatformResourcesClassName = "MR"
 }
