@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetpack.compose)
     alias(libs.plugins.moko.resources)
@@ -42,6 +43,7 @@ kotlin {
                 api(compose.foundation)
                 api(compose.materialIconsExtended)
                 api(compose.material3)
+                api(libs.kotlin.serialization)
                 api(libs.skiko.common)
                 api(libs.moko.resources)
                 api(project(":lib:ComposeColorPicker:colorpicker"))
