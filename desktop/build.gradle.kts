@@ -35,9 +35,14 @@ kotlin {
                 implementation(projects.common)
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.skiko:skiko-awt-runtime-$target:$version")
-                api(compose.preview)
+                implementation(compose.preview)
                 implementation("io.ultreia:bluecove:2.1.1")
                 implementation(project(":lib:FilledSliderCompose:filled-slider-compose"))
+
+                // Logger implementation required for KmLogging library to work
+                implementation("org.slf4j:slf4j-api:1.7.30")
+                implementation("ch.qos.logback:logback-core:1.2.3")
+                implementation("ch.qos.logback:logback-classic:1.2.3")
             }
         }
         val jvmTest by getting

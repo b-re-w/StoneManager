@@ -11,7 +11,7 @@ typealias LString = LocalizedString
 
 abstract class LocalizedString(localeString: String, prior: Boolean = true) {
     companion object {
-        private val log = logging("LocalizedString")
+        private val log = logging()
 
         var DEFAULT: LocalizedString
             get() = defaultLocalizedString
