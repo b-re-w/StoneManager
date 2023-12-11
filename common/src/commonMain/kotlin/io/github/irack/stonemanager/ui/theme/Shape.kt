@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import io.github.irack.stonemanager.ui.style.AutoSizeText
+import io.github.irack.stonemanager.ui.style.MarqueeText
 
 
 val shapes = Shapes(
@@ -46,4 +48,52 @@ fun Text(
 ) {
     Text(text, modifier, color, fontSize, fontStyle, fontWeight, suiteFontFamily, letterSpacing,
         textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout, style)
+}
+
+@Composable
+fun MarqueeText(
+    text: String,
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    gradientEdgeColor: Color = Color.White,
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = LocalTextStyle.current,
+) {
+    MarqueeText(text, modifier, textModifier, gradientEdgeColor, color, fontSize, fontStyle, fontWeight, suiteFontFamily,
+        letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap, onTextLayout, style)
+}
+
+@Composable
+fun AutoSizeText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = 1,
+    minLines: Int = 1,
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = LocalTextStyle.current
+) {
+    AutoSizeText(text, modifier, color, fontSize, fontStyle, fontWeight, suiteFontFamily,
+        letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap,
+        maxLines, minLines, onTextLayout, style
+    )
 }
