@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.abhilash.apps.composecolorpicker.argbToHsv
 import io.github.irack.stonemanager.controller.adapter.LightingType
 import io.github.irack.stonemanager.controller.adapter.modify
-import io.github.irack.stonemanager.ui.view.main.MainLayout
+import io.github.irack.stonemanager.`interface`.ui.view.main.MainLayout
 
 
 @Composable

@@ -1,0 +1,347 @@
+package io.github.irack.stonemanager.`interface`.ui.style
+
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+
+
+val ContainerElevation = 0.0.dp
+val PressedContainerElevation = 0.0.dp
+val FocusContainerElevation = 0.0.dp
+val HoverContainerElevation = 1.0.dp
+val DisabledContainerElevation = 0.0.dp
+
+
+@Composable
+fun NoRippleEffectButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = NoRippleEffectButtonDefaults.shape,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    elevation: NoRippleEffectButtonElevation? = NoRippleEffectButtonDefaults.buttonElevation(),
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = NoRippleEffectButtonDefaults.ContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    content: @Composable RowScope.() -> Unit
+) {
+    val shadowElevation = elevation?.shadowElevation(enabled, interactionSource)?.value ?: 0.dp
+    val tonalElevation = elevation?.tonalElevation(enabled, interactionSource)?.value ?: 0.dp
+    NoRippleEffectSurface(
+        onClick = onClick,
+        modifier = modifier.semantics { role = Role.Button },
+        enabled = enabled,
+        shape = shape,
+        color = containerColor,
+        contentColor = contentColor,
+        tonalElevation = tonalElevation,
+        shadowElevation = shadowElevation,
+        border = border,
+        interactionSource = interactionSource,
+        indication = indication
+    ) {
+        CompositionLocalProvider(LocalContentColor provides contentColor) {
+            ProvideTextStyle(value = MaterialTheme.typography.labelLarge) {
+                Row(
+                    Modifier
+                        .defaultMinSize(
+                            minWidth = NoRippleEffectButtonDefaults.MinWidth,
+                            minHeight = NoRippleEffectButtonDefaults.MinHeight
+                        )
+                        .padding(contentPadding),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = content
+                )
+            }
+        }
+    }
+}
+
+object NoRippleEffectButtonDefaults {
+
+    private val ButtonHorizontalPadding = 24.dp
+    private val ButtonVerticalPadding = 8.dp
+
+    val ContentPadding =
+        PaddingValues(
+            start = ButtonHorizontalPadding,
+            top = ButtonVerticalPadding,
+            end = ButtonHorizontalPadding,
+            bottom = ButtonVerticalPadding
+        )
+
+    val MinWidth = 58.dp
+
+    val MinHeight = 40.dp
+
+    val shape: Shape @Composable get() = ButtonDefaults.shape
+
+    @Composable
+    fun buttonElevation(
+        defaultElevation: Dp = ContainerElevation,
+        pressedElevation: Dp = PressedContainerElevation,
+        focusedElevation: Dp = FocusContainerElevation,
+        hoveredElevation: Dp = HoverContainerElevation,
+        disabledElevation: Dp = DisabledContainerElevation,
+    ): NoRippleEffectButtonElevation = NoRippleEffectButtonElevation(
+        defaultElevation = defaultElevation,
+        pressedElevation = pressedElevation,
+        focusedElevation = focusedElevation,
+        hoveredElevation = hoveredElevation,
+        disabledElevation = disabledElevation,
+    )
+}
+
+class NoRippleEffectButtonElevation internal constructor(
+    private val defaultElevation: Dp,
+    private val pressedElevation: Dp,
+    private val focusedElevation: Dp,
+    private val hoveredElevation: Dp,
+    private val disabledElevation: Dp,
+) {
+    @Composable
+    internal fun tonalElevation(enabled: Boolean, interactionSource: InteractionSource): State<Dp> {
+        return animateElevation(enabled = enabled, interactionSource = interactionSource)
+    }
+
+    @Composable
+    internal fun shadowElevation(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Dp> {
+        return animateElevation(enabled = enabled, interactionSource = interactionSource)
+    }
+
+    @Composable
+    private fun animateElevation(
+        enabled: Boolean,
+        interactionSource: InteractionSource
+    ): State<Dp> {
+        val interactions = remember { mutableStateListOf<Interaction>() }
+        LaunchedEffect(interactionSource) {
+            interactionSource.interactions.collect { interaction ->
+                when (interaction) {
+                    is HoverInteraction.Enter -> {
+                        interactions.add(interaction)
+                    }
+                    is HoverInteraction.Exit -> {
+                        interactions.remove(interaction.enter)
+                    }
+                    is FocusInteraction.Focus -> {
+                        interactions.add(interaction)
+                    }
+                    is FocusInteraction.Unfocus -> {
+                        interactions.remove(interaction.focus)
+                    }
+                    is PressInteraction.Press -> {
+                        interactions.add(interaction)
+                    }
+                    is PressInteraction.Release -> {
+                        interactions.remove(interaction.press)
+                    }
+                    is PressInteraction.Cancel -> {
+                        interactions.remove(interaction.press)
+                    }
+                }
+            }
+        }
+
+        val interaction = interactions.lastOrNull()
+
+        val target =
+            if (!enabled) {
+                disabledElevation
+            } else {
+                when (interaction) {
+                    is PressInteraction.Press -> pressedElevation
+                    is HoverInteraction.Enter -> hoveredElevation
+                    is FocusInteraction.Focus -> focusedElevation
+                    else -> defaultElevation
+                }
+            }
+
+        val animatable = remember { Animatable(target, Dp.VectorConverter) }
+
+        if (!enabled) {
+            // No transition when moving to a disabled state
+            LaunchedEffect(target) { animatable.snapTo(target) }
+        } else {
+            LaunchedEffect(target) {
+                val lastInteraction = when (animatable.targetValue) {
+                    pressedElevation -> PressInteraction.Press(Offset.Zero)
+                    hoveredElevation -> HoverInteraction.Enter()
+                    focusedElevation -> FocusInteraction.Focus()
+                    else -> null
+                }
+                animatable.animateElevation(
+                    from = lastInteraction,
+                    to = interaction,
+                    target = target
+                )
+            }
+        }
+
+        return animatable.asState()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || other !is NoRippleEffectButtonElevation) return false
+
+        if (defaultElevation != other.defaultElevation) return false
+        if (pressedElevation != other.pressedElevation) return false
+        if (focusedElevation != other.focusedElevation) return false
+        if (hoveredElevation != other.hoveredElevation) return false
+        if (disabledElevation != other.disabledElevation) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = defaultElevation.hashCode()
+        result = 31 * result + pressedElevation.hashCode()
+        result = 31 * result + focusedElevation.hashCode()
+        result = 31 * result + hoveredElevation.hashCode()
+        result = 31 * result + disabledElevation.hashCode()
+        return result
+    }
+}
+
+internal suspend fun Animatable<Dp, *>.animateElevation(
+    target: Dp,
+    from: Interaction? = null,
+    to: Interaction? = null
+) {
+    val spec = when {
+        // Moving to a new state
+        to != null -> ElevationDefaults.incomingAnimationSpecForInteraction(to)
+        // Moving to default, from a previous state
+        from != null -> ElevationDefaults.outgoingAnimationSpecForInteraction(from)
+        // Loading the initial state, or moving back to the baseline state from a disabled /
+        // unknown state, so just snap to the final value.
+        else -> null
+    }
+    if (spec != null) animateTo(target, spec) else snapTo(target)
+}
+
+private object ElevationDefaults {
+    /**
+     * Returns the [AnimationSpec]s used when animating elevation to [interaction], either from a
+     * previous [Interaction], or from the default state. If [interaction] is unknown, then
+     * returns `null`.
+     *
+     * @param interaction the [Interaction] that is being animated to
+     */
+    fun incomingAnimationSpecForInteraction(interaction: Interaction): AnimationSpec<Dp>? {
+        return when (interaction) {
+            is PressInteraction.Press -> DefaultIncomingSpec
+            is DragInteraction.Start -> DefaultIncomingSpec
+            is HoverInteraction.Enter -> DefaultIncomingSpec
+            is FocusInteraction.Focus -> DefaultIncomingSpec
+            else -> null
+        }
+    }
+
+    /**
+     * Returns the [AnimationSpec]s used when animating elevation away from [interaction], to the
+     * default state. If [interaction] is unknown, then returns `null`.
+     *
+     * @param interaction the [Interaction] that is being animated away from
+     */
+    fun outgoingAnimationSpecForInteraction(interaction: Interaction): AnimationSpec<Dp>? {
+        return when (interaction) {
+            is PressInteraction.Press -> DefaultOutgoingSpec
+            is DragInteraction.Start -> DefaultOutgoingSpec
+            is HoverInteraction.Enter -> HoveredOutgoingSpec
+            is FocusInteraction.Focus -> DefaultOutgoingSpec
+            else -> null
+        }
+    }
+}
+
+private val OutgoingSpecEasing: Easing = CubicBezierEasing(0.40f, 0.00f, 0.60f, 1.00f)
+
+private val DefaultIncomingSpec = TweenSpec<Dp>(
+    durationMillis = 120,
+    easing = FastOutSlowInEasing
+)
+
+private val DefaultOutgoingSpec = TweenSpec<Dp>(
+    durationMillis = 150,
+    easing = OutgoingSpecEasing
+)
+
+private val HoveredOutgoingSpec = TweenSpec<Dp>(
+    durationMillis = 120,
+    easing = OutgoingSpecEasing
+)
+
+@Composable
+fun NoRippleEffectSurface(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = RectangleShape,
+    color: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = contentColorFor(color),
+    tonalElevation: Dp = 0.dp,
+    shadowElevation: Dp = 0.dp,
+    border: BorderStroke? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    content: @Composable () -> Unit
+) {
+    val absoluteElevation = LocalAbsoluteTonalElevation.current + tonalElevation
+    CompositionLocalProvider(
+        LocalContentColor provides contentColor,
+        LocalAbsoluteTonalElevation provides absoluteElevation
+    ) {
+        Surface(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = indication,
+                    enabled = enabled,
+                    onClick = onClick
+                ),
+            shape = shape,
+            color = color,
+            contentColor = contentColor,
+            tonalElevation = tonalElevation,
+            shadowElevation = shadowElevation,
+            border = border
+        ) {
+            content()
+        }
+    }
+}
