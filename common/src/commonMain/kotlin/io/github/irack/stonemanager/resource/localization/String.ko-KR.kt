@@ -4,6 +4,8 @@ package io.github.irack.stonemanager.resource.localization
 object KoKRString: AppString("ko-KR") {
     override val appName = "스톤 매니저"
 
+    override val appViewFooter = "오픈소스 라이센스"
+
     override val mainConnectedDevice = "연결된 디바이스"
 
     override val mainDeviceConnectionStatus = "연결 중..."
@@ -35,6 +37,10 @@ object KoKRString: AppString("ko-KR") {
     override val mainOnReconnectStatus3 = ""
 
     override val mainConnectionSchedule = "연결 예약"
+
+    override val mainConnectionScheduleRegister = "장치 자동 연결/해제 예약 활성화"
+
+    override val mainConnectionScheduleDeregister = "장치 자동 연결/해제 예약 비활성화"
 
     override val mainReconnectSchedule = "연결"
 

@@ -4,7 +4,9 @@ package io.github.irack.stonemanager.resource.localization
 object EnUSString: AppString("en-US") {
     override val appName = "STONE Manager"
 
-    override val mainHeader = "S T O N E   M A N A G E R"
+    override val appViewHeader = "S T O N E   M A N A G E R"
+
+    override val appViewFooter = "opensource license"
 
     override val mainConnectedDevice = "Connected Device"
 
@@ -37,6 +39,10 @@ object EnUSString: AppString("en-US") {
     override val mainOnReconnectStatus3 = ""
 
     override val mainConnectionSchedule = "Schedule"
+
+    override val mainConnectionScheduleRegister = "Register Device Reconnect Schedule"
+
+    override val mainConnectionScheduleDeregister = "Deregister Device Reconnect Schedule"
 
     override val mainReconnectSchedule = "Wake"
 

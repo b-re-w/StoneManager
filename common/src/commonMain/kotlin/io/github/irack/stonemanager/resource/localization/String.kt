@@ -23,8 +23,11 @@ open class AppString(localeString: String, prior: Boolean = true): LString(local
     open val appName: String
         get() = PRIOR.appName
 
-    open val mainHeader: String
-        get() = PRIOR.mainHeader
+    open val appViewHeader: String
+        get() = PRIOR.appViewHeader
+
+    open val appViewFooter: String
+        get() = PRIOR.appViewFooter
 
     open val mainConnectedDevice: String
         get() = PRIOR.mainConnectedDevice
@@ -79,6 +82,12 @@ open class AppString(localeString: String, prior: Boolean = true): LString(local
 
     open val mainConnectionSchedule: String
         get() = PRIOR.mainConnectionSchedule
+
+    open val mainConnectionScheduleRegister: String
+        get() = PRIOR.mainConnectionScheduleRegister
+
+    open val mainConnectionScheduleDeregister: String
+        get() = PRIOR.mainConnectionScheduleDeregister
 
     open val mainReconnectSchedule: String
         get() = PRIOR.mainReconnectSchedule
