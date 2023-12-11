@@ -7,7 +7,7 @@ import io.github.irack.stonemanager.util.isAfter6AMBefore6PM
 
 @Composable
 expect fun AppTheme(
-    darkTheme: Boolean = /*isTimeInNightPeriod()*/isSystemInDarkTheme(),
+    darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 )
@@ -16,4 +16,4 @@ expect fun AppTheme(
  * @return true when nighttime or if dark theme is enabled
  */
 @Composable
-fun isTimeInNightPeriod(): Boolean = !isAfter6AMBefore6PM() || isSystemInDarkTheme()
+fun isTimeInNightPeriod(): Boolean = isSystemInDarkTheme()// || !isAfter6AMBefore6PM()
