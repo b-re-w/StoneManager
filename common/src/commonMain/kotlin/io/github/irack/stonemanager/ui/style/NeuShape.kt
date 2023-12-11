@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -77,7 +79,7 @@ fun NeuPulsateEffectFlatButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    animation: ClickAnimation = ClickAnimation(1f, 0.96f),
+    animation: ClickAnimation = ClickAnimation(1f, 0.94f),
     shape: Shape = defaultCornerRoundShape,
     neuShape: CornerShape = defaultCornerNeuShape,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -87,8 +89,12 @@ fun NeuPulsateEffectFlatButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
+    val haptic = LocalHapticFeedback.current
     PulsateEffectButton(
-        onClick = onClick,
+        onClick = {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            onClick()
+        },
         modifier = modifier
             .neu(
                 lightShadowColor = appColorSet.lightShadow,
