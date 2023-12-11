@@ -1,7 +1,6 @@
 package io.github.irack.stonemanager.ui.view.main
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -9,27 +8,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Vertices
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import com.abhilash.apps.composecolorpicker.HueBar
-import com.abhilash.apps.composecolorpicker.SaturationValuePanel
 import com.abhilash.apps.composecolorpicker.argbToHsv
-import com.gandiva.neumorphic.LightSource
-import com.gandiva.neumorphic.neu
-import com.gandiva.neumorphic.shape.Flat
 import io.github.irack.stonemanager.resource.localization.LS
-import io.github.irack.stonemanager.ui.style.ClickAnimation
 import io.github.irack.stonemanager.ui.style.NeuPulsateEffectFlatButton
-import io.github.irack.stonemanager.ui.theme.*
+import io.github.irack.stonemanager.ui.theme.BodyText
+import io.github.irack.stonemanager.ui.theme.StatusText
 import io.github.irack.stonemanager.ui.view.Footer
 import io.github.irack.stonemanager.ui.view.Header
-import io.github.irack.stonemanager.unit.toList
-import io.github.irack.stonemanager.util.getPlatform
-import io.github.seyoungcho2.slider.FilledSlider
-import io.github.seyoungcho2.slider.model.SliderColor
-import io.github.seyoungcho2.slider.model.SliderOrientation
-import io.github.seyoungcho2.slider.model.SliderType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

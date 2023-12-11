@@ -5,9 +5,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.abhilash.apps.composecolorpicker.argbToHsv
+import io.github.irack.stonemanager.controller.adapter.LightingType
+import io.github.irack.stonemanager.controller.adapter.modify
 import io.github.irack.stonemanager.ui.view.main.MainLayout
-
-//import io.github.irack.stonemanager.bluetooth.modify
 
 
 @Composable
@@ -32,21 +32,13 @@ fun MainView() {
     val brightness = rememberSaveable {
         mutableStateOf(initialSettingValues.value[0]/100f)
     }
-//    val brightnessInt = rememberSaveable(brightness) {
-//        derivedStateOf {
-//            (brightness.value*100).toInt()
-//        }
-//    }
-    println("hi")
-//    val settingValues = rememberSaveable(initialSettingValues) {
-//        derivedStateOf {
-//            //initialSettingValues.modify(brightnessInt.value, lampType.value, hsv.value)
-//            initialSettingValues
-//        }
-//    }
-//    LaunchedEffect(settingValues.value) {
-//        //daemon.applyChanges(settingValues.value)
-//    }
+    val brightnessInt = derivedStateOf { (brightness.value*100).toInt() }
+    val settingValues = derivedStateOf {
+        (initialSettingValues.modify(brightnessInt.value, LightingType.fromValue(lampType.value), hsv.value)).value
+    }
+    LaunchedEffect(settingValues.value) {
+        //daemon.applyChanges(settingValues.value)
+    }
 
     MainLayout(initialHSV, hsv, deviceName, brightness, lampType)
 }
