@@ -2,6 +2,7 @@ package io.github.irack.stonemanager.ui.style
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -161,8 +162,12 @@ fun PulsateEffectButton(
  * Pulsate effect
  * @see <a href="https://blog.canopas.com/jetpack-compose-cool-button-click-effects-c6bbecec7bcb">Cool Button Click Effects</a>
  */
+@Composable
 fun Modifier.bounceClick(
-    animation: ClickAnimation = ClickAnimation(1f, 0.9f)
+    animation: ClickAnimation = ClickAnimation(1f, 0.9f),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    onClick: () -> Unit = {}
 ) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val scale by animateFloatAsState(
@@ -175,9 +180,9 @@ fun Modifier.bounceClick(
             scaleY = scale
         }
         .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = { }
+            interactionSource = interactionSource,
+            indication = indication,
+            onClick = onClick
         )
         .pointerInput(buttonState) {
             awaitPointerEventScope {
@@ -218,8 +223,12 @@ fun PressEffectButton(
  * Press effect
  * @see <a href="https://blog.canopas.com/jetpack-compose-cool-button-click-effects-c6bbecec7bcb">Cool Button Click Effects</a>
  */
+@Composable
 fun Modifier.pressClickEffect(
-    animation: ClickAnimation = ClickAnimation(0f, -10f)
+    animation: ClickAnimation = ClickAnimation(0f, -10f),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    onClick: () -> Unit = {}
 ) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val ty by animateFloatAsState(
@@ -231,9 +240,9 @@ fun Modifier.pressClickEffect(
             translationY = ty
         }
         .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = { }
+            interactionSource = interactionSource,
+            indication = indication,
+            onClick = onClick
         )
         .pointerInput(buttonState) {
             awaitPointerEventScope {
@@ -274,8 +283,12 @@ fun ShakeEffectButton(
  * Shake effect
  * @see <a href="https://blog.canopas.com/jetpack-compose-cool-button-click-effects-c6bbecec7bcb">Cool Button Click Effects</a>
  */
+@Composable
 fun Modifier.shakeClickEffect(
-    animation: ClickAnimation = ClickAnimation(0f, 50f)
+    animation: ClickAnimation = ClickAnimation(0f, 50f),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    indication: Indication? = null,
+    onClick: () -> Unit = {}
 ) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val tx by animateFloatAsState(
@@ -292,9 +305,9 @@ fun Modifier.shakeClickEffect(
             translationX = tx
         }
         .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = { }
+            interactionSource = interactionSource,
+            indication = indication,
+            onClick = onClick
         )
         .pointerInput(buttonState) {
             awaitPointerEventScope {
@@ -356,7 +369,9 @@ fun AnimatedShapeButton(
 @Composable
 fun Modifier.shapeAnimationEffect(
     radiusAnimation: ClickAnimation = ClickAnimation(50f, 20f),
-    sizeAnimation: ClickAnimation = ClickAnimation(100f, 80f)
+    sizeAnimation: ClickAnimation = ClickAnimation(100f, 80f),
+    indication: Indication? = null,
+    onClick: () -> Unit = {}
 ) = composed {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
@@ -372,7 +387,7 @@ fun Modifier.shapeAnimationEffect(
         .clip(RoundedCornerShape(cornerRadius))
         .clickable(
             interactionSource = interactionSource,
-            indication = null,
-            onClick = { }
+            indication = indication,
+            onClick = onClick
         )
 }
