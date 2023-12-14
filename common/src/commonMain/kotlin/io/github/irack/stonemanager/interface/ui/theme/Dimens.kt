@@ -17,7 +17,7 @@ import kotlinx.coroutines.delay
 val defaultNeuElevation: Dp
     @Composable get() = when (AppColorSet.isLight) {
         true -> 18.dp
-        false -> 14.dp
+        false -> 16.dp
     }
 val defaultCornerRadius: Dp = 36.dp
 val defaultCornerRoundShape: RoundedCornerShape = RoundedCornerShape(defaultCornerRadius)

@@ -2,6 +2,7 @@ package io.github.irack.stonemanager.`interface`.ui.view.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -10,12 +11,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.abhilash.apps.composecolorpicker.argbToHsv
 import com.abhilash.apps.composecolorpicker.rememberForeverScrollState
-import io.github.irack.stonemanager.`interface`.ui.theme.dialogOpeningHaptic
-import io.github.irack.stonemanager.`interface`.ui.theme.isHorizontal
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain
+import io.github.irack.stonemanager.`interface`.resource.localization.LS
+import io.github.irack.stonemanager.`interface`.ui.style.NeuPulsateEffectFlatButton
+import io.github.irack.stonemanager.`interface`.ui.theme.*
+import io.github.irack.stonemanager.`interface`.ui.unit.toList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 
 @Composable
@@ -35,9 +42,9 @@ fun MainLayout(
     lampType: MutableState<Int> = rememberSaveable {
         mutableStateOf(0)
     },
-    schedulingEnabled: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
+    schedulingEnabled: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) },
     reconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("07:00")},
-    disconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("32:00")},
+    disconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("23:00")},
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -46,9 +53,11 @@ fun MainLayout(
     val isViewLaunched = rememberSaveable { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+    val showBottomSheet = remember { mutableStateOf(false) }
     val openLampTypeSelector: () -> Unit = {
-
+        showBottomSheet.value = true
     }
+    ListSelectDialog(showBottomSheet, lampType)
     val openWelcomeLightTypeSelector: () -> Unit = {
 
     }
@@ -83,9 +92,7 @@ fun MainLayout(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         if (isHorizontal()) {
             Row(
-                Modifier
-                    .fillMaxSize()
-                    .systemBarsPadding(),
+                Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
@@ -100,7 +107,7 @@ fun MainLayout(
                     MainHeader()
                     MainDevicePanel(
                         isViewLaunched.value,
-                        Modifier.fillMaxHeight(),
+                        Modifier.weight(1f),
                         deviceName
                     )
                     MainFooter(isViewLaunched.value)
@@ -113,18 +120,16 @@ fun MainLayout(
                         .systemBarsPadding()
                         .weight(1f),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.Start
                 ) {
                     MainTitlePanel(isViewLaunched.value)
-                    Row(Modifier.fillMaxWidth(), ) {
-                        MainControlPanel(
-                            isViewLaunched,
-                            initialHSV, hsv, brightness, lampType,
-                            openLampTypeSelector, openWelcomeLightTypeSelector,
-                            schedulingEnabled, reconnectTimeString, disconnectTimeString,
-                            openReconnectTimeSelector, openDisconnectTimeSelector
-                        )
-                    }
+                    MainControlPanel(
+                        isViewLaunched,
+                        initialHSV, hsv, brightness, lampType,
+                        openLampTypeSelector, openWelcomeLightTypeSelector,
+                        schedulingEnabled, reconnectTimeString, disconnectTimeString,
+                        openReconnectTimeSelector, openDisconnectTimeSelector
+                    )
                 }
             }
         } else {
@@ -134,7 +139,7 @@ fun MainLayout(
                     .verticalScroll(scrollState)
                     .padding(20.dp)
                     .systemBarsPadding(),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MainHeader()
@@ -157,24 +162,91 @@ fun MainLayout(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListSelectDialog() {
-//    val animateTrigger = remember { mutableStateOf(false) }
-//    LaunchedEffect(key1 = Unit) {
-//        launch {
-//            delay(DIALOG_BUILD_TIME)
-//            animateTrigger.value = true
-//        }
-//    }
-//    Dialog(onDismissRequest = onDismissRequest) {
-//        Box(contentAlignment = contentAlignment,
-//            modifier = Modifier.fillMaxSize()
-//        ) {
-//            AnimatedScaleInTransition(visible = animateTrigger.value) {
-//                content()
-//            }
-//        }
-//    }
+fun ListSelectDialog(
+    showBottomSheet: MutableState<Boolean> = remember { mutableStateOf(false) },
+    selectionState: MutableState<Int> = remember { mutableStateOf(0) },
+    targetStringList: List<String> = LS.mainLampStatus.toList(),
+    targetIconList: List<@Composable (String, Modifier) -> Unit> = DrawableMain.SelectDialog.lampTypeIconList,
+    title: @Composable () -> Unit = {
+        val lampText = LS.mainLampDescriptor
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            DrawableMain.SelectDialog.Lamp(lampText, Modifier.size(30.dp))
+            HeadText(lampText, fontWeight = FontWeight.ExtraBold)
+        }
+    }
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
+    if (showBottomSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheet.value = false
+            },
+            sheetState = sheetState
+        ) {
+            Surface(Modifier.padding(20.dp, 0.dp, 20.dp, 20.dp)) {
+                title()
+            }
+
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                val columnLength = if (isHorizontal()) 4 else 2
+                Column(Modifier.fillMaxWidth(), Arrangement.spacedBy(20.dp)) {
+                    for (i in 0 until ceil(targetStringList.size/columnLength.toDouble()).toInt()) {
+                        Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), Arrangement.spacedBy(20.dp)) {
+                            for (j in 0 until columnLength) {
+                                val item = i * columnLength + j
+                                val desc = targetStringList.getOrNull(item)
+                                if (desc != null) {
+                                    NeuPulsateEffectFlatButton(
+                                        onClick = {
+                                            selectionState.value = item
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        contentPadding = PaddingValues(4.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            if (selectionState.value == item) MaterialTheme.colorScheme.onTertiary
+                                            else appColorSet.listSelectionButtonBackground)
+                                    ) {
+                                        Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.CenterVertically) {
+                                            targetIconList[item](desc, Modifier.padding(10.dp).size(48.dp))
+                                            BodyText(desc, Modifier.padding(end = 12.dp), fontSize = headTextFontSize, color
+                                                = if (selectionState.value == item) MaterialTheme.colorScheme.tertiary
+                                                    else appColorSet.listSelectionButtonForeground,
+                                                resizer = remember { mutableStateOf(1f) })
+                                        }
+                                    }
+                                } else {
+                                    Box(Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row(Modifier.fillMaxWidth(), Arrangement.Center) {
+                NeuPulsateEffectFlatButton(
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet.value = false
+                            }
+                        }
+                    },
+                    modifier = Modifier.padding(0.dp, 30.dp, 0.dp, 30.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onTertiary),
+                    contentPadding = PaddingValues(24.dp, 16.dp)
+                ) {
+                    StatusText("Close", color = MaterialTheme.colorScheme.tertiary)
+                }
+            }
+
+            Spacer(Modifier.navigationBarsPadding())
+        }
+    }
 }
 
 @Composable

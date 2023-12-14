@@ -205,7 +205,7 @@ fun AutoSizeTextWithResizer(
         maxLines, minLines,
         onTextLayout = {
             if (it.hasVisualOverflow) {
-                resizer.value -= 0.01f
+                resizer.value *= 0.99f
             }
             onTextLayout(it)
         },

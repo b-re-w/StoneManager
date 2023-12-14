@@ -25,6 +25,7 @@ import io.github.irack.stonemanager.`interface`.resource.util.getPlatform
 import io.github.irack.stonemanager.`interface`.ui.style.ClickAnimation
 import io.github.irack.stonemanager.`interface`.ui.style.NeuPulsateEffectFlatButton
 import io.github.irack.stonemanager.`interface`.ui.style.PulsateEffectButton
+import io.github.irack.stonemanager.`interface`.ui.style.createNeuAnimation
 import io.github.irack.stonemanager.`interface`.ui.theme.*
 import io.github.irack.stonemanager.`interface`.ui.unit.toList
 import io.github.seyoungcho2.slider.FilledSlider
@@ -59,32 +60,35 @@ fun ControlMenuBar(
     openWelcomeLightTypeSelector: () -> Unit = {},
     modifier: Modifier = Modifier.fillMaxWidth(),
     horizontalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(6.dp),
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    shadowElevation: Dp = defaultNeuElevation
 ) {
     Row(modifier, horizontalArrangement, verticalAlignment) {
-        NeuPulsateEffectFlatButton(openLampTypeSelector, Modifier.weight(1f)) {
+        NeuPulsateEffectFlatButton(openLampTypeSelector, Modifier.weight(1f), shadowElevation = shadowElevation) {
             BodyText(LS.mainLampDescriptor)
+            Spacer(Modifier.height(6.dp))
             val statusString = LS.mainLampStatus.toList()
             StatusText(
                 text = statusString.getOrElse(lampType.value) { statusString[0] },
                 overflow = TextOverflow.Ellipsis
             )
         }
-        NeuPulsateEffectFlatButton({}, Modifier.weight(1.2f)) {
+        NeuPulsateEffectFlatButton({}, Modifier.weight(1.2f), shadowElevation = shadowElevation) {
             BodyText(LS.mainBatteryDescriptor)
+            Spacer(Modifier.height(6.dp))
             StatusText("100%", overflow = TextOverflow.Ellipsis)  // TODO: Battery Status
         }
-        NeuPulsateEffectFlatButton(openWelcomeLightTypeSelector, Modifier.weight(1.4f)) {
+        NeuPulsateEffectFlatButton(openWelcomeLightTypeSelector, Modifier.weight(1.4f), shadowElevation = shadowElevation) {
             BodyText(LS.mainOnReconnectDescriptor)
+            Spacer(Modifier.height(6.dp))
             StatusText(LS.mainOnReconnectStatus1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
 
-
 @Composable
 fun LampControlSpace(
-    hideColorPicker: Boolean = false,
+    pickerHideLevel: Int = 0,
     initialHSV: FloatArray = argbToHsv(Color.Cyan.toArgb()),
     hsv: MutableState<Triple<Float, Float, Float>> = rememberSaveable {
         mutableStateOf(
@@ -95,44 +99,57 @@ fun LampControlSpace(
         mutableStateOf(0.5f)
     },
     modifier: Modifier = Modifier.fillMaxWidth(),
-    animation: ClickAnimation = ClickAnimation(1f, 0.985f),
-    columnSpacedBy: Dp = 10.dp
+    animation: ClickAnimation = ClickAnimation(1f, 0.97f),
+    columnSpacedBy: Dp = 12.dp,
+    shadowElevation: Dp = defaultNeuElevation
 ) {
+    val hideBrightnessPanel = pickerHideLevel < 1
+    val hideColorPicker = pickerHideLevel != 1
     val buttonContentsPadding = PaddingValues(0.dp)
     Column(modifier, Arrangement.spacedBy(columnSpacedBy), Alignment.CenterHorizontally) {
-        NeuPulsateEffectFlatButton(
-            onClick = {},
-            modifier = modifier,
-            animation = animation,
-            contentPadding = buttonContentsPadding
-        ) {
-            FilledSlider(
-                modifier = Modifier
-                    .height(colorPickerWidgetHeight)
-                    .fillMaxWidth(),
-                sliderShape = defaultCornerRoundShape,
-                isEnabled = true,
-                sliderColor = SliderColor(
-                    enabledTrackColor = MaterialTheme.colorScheme.primary,
-                    enabledIndicationColor = Color.White
-                ),
-                sliderOrientation = SliderOrientation.Horizontal,
-                sliderType = SliderType.Continuous,
-                dragSensitivity = if (getPlatform().name.contains("Desktop")) 2.2f else 1.6f,
-                valueRange = 0f..1f,
-                currentValue = brightness.value,
-                setCurrentValue = { newValue ->
-                    brightness.value = newValue
-                }
-            )
-        }
-
-        AnimatedVisibility(hideColorPicker) {
+        val (state1, transition1, setter1)
+            = createNeuAnimation(0, 400, true, defaultNeuElevation)
+        setter1(!hideBrightnessPanel)
+        AnimatedVisibility(!hideBrightnessPanel, enter = transition1.first, exit = transition1.second) {
             NeuPulsateEffectFlatButton(
                 onClick = {},
                 modifier = modifier,
                 animation = animation,
-                contentPadding = buttonContentsPadding
+                contentPadding = buttonContentsPadding,
+                shadowElevation = state1.value.dp + shadowElevation - defaultNeuElevation
+            ) {
+                FilledSlider(
+                    modifier = Modifier
+                        .height(colorPickerWidgetHeight)
+                        .fillMaxWidth(),
+                    sliderShape = defaultCornerRoundShape,
+                    isEnabled = true,
+                    sliderColor = SliderColor(
+                        enabledTrackColor = appColorSet.brightPanelBackground,
+                        enabledIndicationColor = appColorSet.brightPanelForeground
+                    ),
+                    sliderOrientation = SliderOrientation.Horizontal,
+                    sliderType = SliderType.Continuous,
+                    dragSensitivity = if (getPlatform().name.contains("Desktop")) 2.2f else 1.6f,
+                    valueRange = 0f..1f,
+                    currentValue = brightness.value,
+                    setCurrentValue = { newValue ->
+                        brightness.value = newValue
+                    }
+                )
+            }
+        }
+
+        val (state2, transition2, setter2)
+            = createNeuAnimation(200, 200, true, defaultNeuElevation)
+        setter2(!hideColorPicker)
+        AnimatedVisibility(!hideColorPicker, enter = transition2.first, exit = transition2.second) {
+            NeuPulsateEffectFlatButton(
+                onClick = {},
+                modifier = modifier,
+                animation = animation,
+                contentPadding = buttonContentsPadding,
+                shadowElevation = state2.value.dp + shadowElevation - defaultNeuElevation
             ) {
                 HueBar(
                     modifier = Modifier
@@ -147,12 +164,16 @@ fun LampControlSpace(
             }
         }
 
-        AnimatedVisibility(hideColorPicker) {
+        val (state3, transition3, setter3)
+            = createNeuAnimation(400, 0, true, defaultNeuElevation)
+        setter3(!hideColorPicker)
+        AnimatedVisibility(!hideColorPicker, enter = transition3.first, exit = transition3.second) {
             NeuPulsateEffectFlatButton(
                 onClick = {},
                 modifier = modifier,
                 animation = animation,
-                contentPadding = buttonContentsPadding
+                contentPadding = buttonContentsPadding,
+                shadowElevation = state3.value.dp + shadowElevation - defaultNeuElevation
             ) {
                 SaturationValuePanel(
                     modifier = Modifier
@@ -191,10 +212,11 @@ fun ScheduleTimeButton(
             modifier = Modifier.weight(1f),
             shape = defaultCornerRoundShape,
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
             elevation = null
         ) {
             val (hour, minute) = timeString.value.split(":")
+            val onSecondary = MaterialTheme.colorScheme.onSecondary
             AnimatedContent(
                 targetState = if (schedulingEnabled.value) hour else "--",
                 transitionSpec = {
@@ -204,9 +226,9 @@ fun ScheduleTimeButton(
                     ) togetherWith ExitTransition.None
                 }
             ) { time ->
-                StatusText(time, resizer = resizer)
+                StatusText(time, color = onSecondary, resizer = resizer, overflow = TextOverflow.Visible)
             }
-            StatusText(":", resizer = resizer)
+            StatusText(":", color = onSecondary, resizer = resizer)
             AnimatedContent(
                 targetState = if (schedulingEnabled.value) minute else "--",
                 transitionSpec = {
@@ -216,7 +238,7 @@ fun ScheduleTimeButton(
                     ) togetherWith ExitTransition.None
                 }
             ) { time ->
-                StatusText(time, resizer = resizer)
+                StatusText(time, color = onSecondary, resizer = resizer, overflow = TextOverflow.Visible)
             }
         }
     }
@@ -226,11 +248,12 @@ fun ScheduleTimeButton(
 fun ReconnectionScheduleButton(
     schedulingEnabled: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     reconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("07:00")},
-    disconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("32:00")},
+    disconnectTimeString: MutableState<String> = rememberSaveable { mutableStateOf("23:00")},
     openReconnectTimeSelector: () -> Unit = {},
-    openDisconnectTimeSelector: () -> Unit = {}
+    openDisconnectTimeSelector: () -> Unit = {},
+    shadowElevation: Dp = defaultNeuElevation
 ) {
-    val resizer = remember { mutableStateOf(1f) }
+    val resizer = remember { mutableStateOf(0.6f) }
     NeuPulsateEffectFlatButton(
         onClick = {
             openReconnectTimeSelector()
@@ -241,8 +264,9 @@ fun ReconnectionScheduleButton(
             .onSizeChanged {
                 resizer.value = 1f
             },
-        animation = ClickAnimation(1f, 0.985f),
-        contentPadding = PaddingValues(12.dp, 8.dp, 12.dp, 12.dp)
+        animation = ClickAnimation(1f, 0.97f),
+        contentPadding = PaddingValues(12.dp, 8.dp, 12.dp, 12.dp),
+        shadowElevation = shadowElevation
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
