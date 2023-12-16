@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import io.github.irack.stonemanager.`interface`.resource.localization.LS
 import io.github.irack.stonemanager.`interface`.ui.style.ClickAnimation
@@ -68,13 +70,25 @@ object DrawableMain {
     }
 
     @Composable
-    fun VolumnMax(desc: String, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onBackground) {
+    fun VolumeMax(desc: String, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onBackground) {
         Drawable("drawable/main/volume_up_fill1_wght200_grad0_opsz24.xml", desc, modifier, tint)
     }
 
     @Composable
-    fun VolumnMute(desc: String, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onBackground) {
+    fun VolumeMute(desc: String, modifier: Modifier = Modifier, tint: Color = MaterialTheme.colorScheme.onBackground) {
         Drawable("drawable/main/volume_mute_fill1_wght200_grad0_opsz24.xml", desc, modifier, tint)
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    fun VolumeWheelBackground(desc: String, modifier: Modifier = Modifier) {
+        Image(painterResource("drawable/main/volume_wheel_background.xml"), desc, modifier.clip(RoundedCornerShape(50)))
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    @Composable
+    fun VolumeWheelForeground(desc: String, modifier: Modifier = Modifier) {
+        Image(painterResource("drawable/main/volume_wheel_foreground.xml"), desc, modifier.clip(RoundedCornerShape(50)))
     }
 
     object SelectDialog {
@@ -85,7 +99,6 @@ object DrawableMain {
             Drawable("${PATH}backlight_high_fill1_wght700_grad200_opsz20.xml", desc, modifier, tint)
         }
 
-        @OptIn(ExperimentalResourceApi::class)
         @Composable
         fun GradientIcon(res: String, desc: String, modifier: Modifier = Modifier, brushGradient: Brush) {
             Drawable(
