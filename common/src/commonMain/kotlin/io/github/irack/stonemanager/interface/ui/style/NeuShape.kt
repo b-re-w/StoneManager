@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -91,6 +92,8 @@ fun NeuPulsateEffectFlatButton(
     shape: Shape = defaultCornerRoundShape,
     neuShape: CornerShape = defaultCornerNeuShape,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
+    lightShadowColor: Color = appColorSet.lightShadow,
+    darkShadowColor: Color = appColorSet.darkShadow,
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     shadowElevation: Dp = defaultNeuElevation,
     border: BorderStroke? = null,
@@ -106,8 +109,8 @@ fun NeuPulsateEffectFlatButton(
         },
         modifier = modifier
             .neu(
-                lightShadowColor = appColorSet.lightShadow,
-                darkShadowColor = appColorSet.darkShadow,
+                lightShadowColor = lightShadowColor,
+                darkShadowColor = darkShadowColor,
                 shadowElevation = shadowElevation,
                 lightSource = LightSource.LEFT_TOP,
                 shape = Flat(neuShape)
@@ -149,7 +152,7 @@ fun rememberForeverNeuAnimation(
             }
             currentElevation.value = 0f
         } else {
-            delay((enterDelay/1.2).toLong())
+            delay(enterDelay.toLong())
             var currentMilli = duration.toDouble()
             while (currentMilli > 0) {
                 currentElevation.value += increment
@@ -187,17 +190,7 @@ fun createNeuAnimation(  // TODO: refactor to use animateFloatAsState
     enterDelay: Int, exitDelay: Int, initialStateVisibility: Boolean = false, maxElevation: Dp = defaultNeuElevation
 ): Triple<MutableState<Float>, Pair<EnterTransition, ExitTransition>, ((Boolean) -> Unit)> {
     val (state, trigger) = rememberForeverNeuAnimation(enterDelay, exitDelay, 400, initialStateVisibility, maxElevation)
-    val enterAnimation: EnterTransition = fadeIn(
-        animationSpec = tween(durationMillis = 400, easing = LinearOutSlowInEasing, delayMillis = enterDelay)
-    ) + slideInVertically(
-        initialOffsetY = { fullHeight -> fullHeight },
-        animationSpec = tween(durationMillis = 400, easing = LinearOutSlowInEasing, delayMillis = enterDelay)
-    )
-    val exitAnimation: ExitTransition = fadeOut(
-        animationSpec = tween(durationMillis = 400, easing = FastOutLinearInEasing, delayMillis = exitDelay)
-    ) + slideOutVertically(
-        targetOffsetY = { fullHeight -> fullHeight },
-        animationSpec = tween(durationMillis = 400, easing = FastOutLinearInEasing, delayMillis = exitDelay)
-    )
+    val enterAnimation = fadeInSlideInVertically(400, enterDelay, true)
+    val exitAnimation = fadeOutSlideOutVertically(400, exitDelay, true)
     return Triple(state, Pair(enterAnimation, exitAnimation), trigger)
 }
