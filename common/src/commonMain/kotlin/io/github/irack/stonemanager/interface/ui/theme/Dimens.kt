@@ -34,7 +34,8 @@ val horizontalLayoutThreshold = 600.dp
 @Composable
 fun BoxWithConstraintsScope.isHorizontal(): Boolean = this.maxWidth > horizontalLayoutThreshold
 
-val dialogOpeningHaptic: suspend CoroutineScope.((HapticFeedbackType) -> Unit) -> Unit = { performHapticFeedback ->
+val dialogOpeningHaptic: suspend CoroutineScope.((HapticFeedbackType) -> Unit, suspend CoroutineScope.() -> Unit) -> Unit
+        = { performHapticFeedback, openDial ->
     performHapticFeedback(HapticFeedbackType.LongPress)
     delay(30)
     performHapticFeedback(HapticFeedbackType.LongPress)
@@ -46,7 +47,7 @@ val dialogOpeningHaptic: suspend CoroutineScope.((HapticFeedbackType) -> Unit) -
     performHapticFeedback(HapticFeedbackType.LongPress)
     delay(30)
     performHapticFeedback(HapticFeedbackType.LongPress)
-    delay(400)
+    openDial()
     performHapticFeedback(HapticFeedbackType.LongPress)
     delay(100)
     performHapticFeedback(HapticFeedbackType.LongPress)
