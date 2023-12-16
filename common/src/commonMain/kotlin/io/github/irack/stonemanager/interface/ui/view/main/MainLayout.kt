@@ -1,5 +1,9 @@
 package io.github.irack.stonemanager.`interface`.ui.view.main
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -10,18 +14,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.abhilash.apps.composecolorpicker.argbToHsv
 import com.abhilash.apps.composecolorpicker.rememberForeverScrollState
 import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain
 import io.github.irack.stonemanager.`interface`.resource.localization.LS
+import io.github.irack.stonemanager.`interface`.resource.util.convertPixelsToDp
 import io.github.irack.stonemanager.`interface`.ui.style.NeuPulsateEffectFlatButton
 import io.github.irack.stonemanager.`interface`.ui.theme.*
 import io.github.irack.stonemanager.`interface`.ui.unit.toList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jetbrains.skia.paragraph.HeightMode
 import kotlin.math.ceil
 
 
@@ -49,13 +57,22 @@ fun MainLayout(
     val haptic = LocalHapticFeedback.current
 
     val scrollState = rememberForeverScrollState("MainAppViewLayout")
-    val innerScrollState = rememberForeverScrollState("MainAppViewLayoutEnd")
+    val innerScrollStateStart = rememberForeverScrollState("MainAppViewLayoutStart")
+    val innerScrollStateEnd = rememberForeverScrollState("MainAppViewLayoutEnd")
     val isViewLaunched = rememberSaveable { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val showBottomSheet = remember { mutableStateOf(false) }
     val openLampTypeSelector: () -> Unit = {
-        showBottomSheet.value = true
+        scope.launch {
+            dialogOpeningHaptic({
+                haptic.performHapticFeedback(it)
+            }) {
+                delay(200)
+                showBottomSheet.value = true
+                delay(100)
+            }
+        }
     }
     ListSelectDialog(showBottomSheet, lampType)
     val openWelcomeLightTypeSelector: () -> Unit = {
@@ -63,15 +80,19 @@ fun MainLayout(
     }
     val openReconnectTimeSelector: () -> Unit = {
         scope.launch {
-            dialogOpeningHaptic {
+            dialogOpeningHaptic({
                 haptic.performHapticFeedback(it)
+            }) {
+                delay(400)
             }
         }
     }
     val openDisconnectTimeSelector: () -> Unit = {
         scope.launch {
-            dialogOpeningHaptic {
+            dialogOpeningHaptic({
                 haptic.performHapticFeedback(it)
+            }) {
+                delay(400)
             }
         }
     }
@@ -98,31 +119,31 @@ fun MainLayout(
                 Column(
                     Modifier
                         .fillMaxHeight()
+                        .verticalScroll(innerScrollStateStart)
                         .padding(20.dp)
                         .systemBarsPadding()
                         .weight(1f),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MainHeader()
                     MainDevicePanel(
                         isViewLaunched.value,
-                        Modifier.weight(1f),
-                        deviceName
+                        deviceName = deviceName
                     )
                     MainFooter(isViewLaunched.value)
                 }
                 Column(
                     Modifier
                         .fillMaxHeight()
-                        .verticalScroll(innerScrollState)
+                        .verticalScroll(innerScrollStateEnd)
                         .padding(20.dp, 26.dp, 20.dp, 26.dp)
                         .systemBarsPadding()
                         .weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    MainTitlePanel(isViewLaunched.value)
+                    MainTitlePanel(isViewLaunched.value, Modifier.fillMaxWidth().padding(8.dp, 12.dp, 8.dp, 32.dp))
                     MainControlPanel(
                         isViewLaunched,
                         initialHSV, hsv, brightness, lampType,
@@ -133,30 +154,44 @@ fun MainLayout(
                 }
             }
         } else {
+            val currentHeight = rememberSaveable { mutableStateOf(0) }
+            val verticalSpacerHeight = animateDpAsState(
+                convertPixelsToDp(currentHeight.value.toFloat()),
+                animationSpec = tween(durationMillis = 1000, delayMillis = 100)
+            )
             Column(
                 Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(20.dp)
                     .systemBarsPadding(),
-                verticalArrangement = Arrangement.Top,
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MainHeader()
-                MainTitlePanel(isViewLaunched.value)
+                Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+                    MainHeader()
+                    Box(Modifier.fillMaxWidth()) {
+                        Box(Modifier.fillMaxWidth().onGloballyPositioned { currentHeight.value = it.size.height }
+                        ) {
+                            MainTitlePanel(isViewLaunched.value)
+                        }
+                        Spacer(Modifier.height(verticalSpacerHeight.value))
+                    }
+                }
                 MainDevicePanel(
                     isViewLaunched.value,
-                    Modifier.fillMaxHeight(),
-                    deviceName
+                    deviceName = deviceName
                 )
-                MainControlPanel(
-                    isViewLaunched,
-                    initialHSV, hsv, brightness, lampType,
-                    openLampTypeSelector, openWelcomeLightTypeSelector,
-                    schedulingEnabled, reconnectTimeString, disconnectTimeString,
-                    openReconnectTimeSelector, openDisconnectTimeSelector
-                )
-                MainFooter(isViewLaunched.value)
+                Column(Modifier.fillMaxWidth(), Arrangement.Center, Alignment.CenterHorizontally) {
+                    MainControlPanel(
+                        isViewLaunched,
+                        initialHSV, hsv, brightness, lampType,
+                        openLampTypeSelector, openWelcomeLightTypeSelector,
+                        schedulingEnabled, reconnectTimeString, disconnectTimeString,
+                        openReconnectTimeSelector, openDisconnectTimeSelector
+                    )
+                    MainFooter(isViewLaunched.value)
+                }
             }
         }
     }

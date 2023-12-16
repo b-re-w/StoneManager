@@ -1,14 +1,20 @@
 package io.github.irack.stonemanager.`interface`.ui.view.main
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
@@ -16,30 +22,95 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.abhilash.apps.composecolorpicker.HueBar
 import com.abhilash.apps.composecolorpicker.SaturationValuePanel
 import com.abhilash.apps.composecolorpicker.argbToHsv
+import com.gandiva.neumorphic.shape.CornerShape
+import com.gandiva.neumorphic.shape.RoundedCorner
 import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.LampLightHigh
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.LampLightLow
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.VolumeMax
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.VolumeMute
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.VolumeWheelBackground
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain.VolumeWheelForeground
 import io.github.irack.stonemanager.`interface`.resource.localization.LS
+import io.github.irack.stonemanager.`interface`.resource.util.convertDpToPixels
 import io.github.irack.stonemanager.`interface`.resource.util.getPlatform
-import io.github.irack.stonemanager.`interface`.ui.style.ClickAnimation
-import io.github.irack.stonemanager.`interface`.ui.style.NeuPulsateEffectFlatButton
-import io.github.irack.stonemanager.`interface`.ui.style.PulsateEffectButton
-import io.github.irack.stonemanager.`interface`.ui.style.createNeuAnimation
+import io.github.irack.stonemanager.`interface`.ui.style.*
 import io.github.irack.stonemanager.`interface`.ui.theme.*
 import io.github.irack.stonemanager.`interface`.ui.unit.toList
 import io.github.seyoungcho2.slider.FilledSlider
 import io.github.seyoungcho2.slider.model.SliderColor
 import io.github.seyoungcho2.slider.model.SliderOrientation
 import io.github.seyoungcho2.slider.model.SliderType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun VolumnWheelDial(
-    isViewLaunched: Boolean = false
+fun VolumeWheelDial(
+    isViewLaunched: Boolean = false,
+    volumeLevelState: MutableState<Int> = rememberSaveable { mutableStateOf(14) }
 ) {
+    val showState = rememberSaveable { mutableStateOf(false) }
+    val wheelSize = animateDpAsState(if (showState.value) 200.dp else 120.dp,
+        animationSpec = tween(500))
+    val innerWheelSize = wheelSize.value / 1.6f
+    val iconOffset = animateDpAsState(if (isViewLaunched) 17.dp else 0.dp,
+        animationSpec = tween(500, delayMillis = 1000))
 
+    Row(Modifier.fillMaxWidth().padding(0.dp, 0.dp, 0.dp, 20.dp), Arrangement.Center, Alignment.Bottom) {
+        AnimatedVisibility(isViewLaunched, enter = fadeInSlideInHorizontally(toLeftDirection = false)) {
+            VolumeMute("", Modifier.size(34.dp).offset(x = iconOffset.value))  // TODO: fill desc
+        }
+
+        NeuPulsateEffectFlatButton({}, Modifier, false,
+            colors = ButtonDefaults.buttonColors(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent),
+            neuShape = RoundedCorner(wheelSize.value/2f),
+            shape = RoundedCornerShape(40),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Box(Modifier.background(Color.Transparent), Alignment.Center) {
+                VolumeWheelBackground("", Modifier.size(wheelSize.value))  // TODO: fill desc
+                NeuPulsateEffectFlatButton({},
+                    modifier = Modifier
+                        .size(wheelSize.value/1.15f)
+                        .trackCircularSlider(
+                            14, 86,
+                            circleCenter = Offset(convertDpToPixels(wheelSize.value)/2, convertDpToPixels(wheelSize.value)/2),
+                            sensitivity = 2f,
+                            positionValue = volumeLevelState
+                        ),
+                    shape = DialShape(volumeLevelState.value.toFloat(), convertDpToPixels(innerWheelSize)/2f),
+                    neuShape = RoundedCorner(wheelSize.value/2f),
+                    lightShadowColor = Color(0x13b89dc6),
+                    darkShadowColor = Color(0x08000000),
+                    shadowElevation = wheelSize.value/14f,
+                    border = BorderStroke(1.2.dp, Brush.linearGradient(listOf(Color(0xB4F6F8FC), Color(0x20767171)))),
+                    contentPadding = PaddingValues(0.dp),
+                    interactionSource = remember { NoRippleInteractionSource() }
+                ) {
+                    VolumeWheelForeground("", Modifier.size(wheelSize.value))  // TODO: fill desc
+                }
+            }
+        }
+
+        AnimatedVisibility(isViewLaunched, enter = fadeInSlideInHorizontally(toLeftDirection = true)) {
+            VolumeMax("", Modifier.size(34.dp).offset(x = -iconOffset.value))
+        }
+    }
+
+    val scope = rememberCoroutineScope()
+    scope.launch {
+        if (!isViewLaunched) {
+            delay(1000)
+            showState.value = !isViewLaunched
+        } else {
+            showState.value = isViewLaunched
+        }
+    }
 }
 
 
@@ -118,25 +189,31 @@ fun LampControlSpace(
                 contentPadding = buttonContentsPadding,
                 shadowElevation = state1.value.dp + shadowElevation - defaultNeuElevation
             ) {
-                FilledSlider(
-                    modifier = Modifier
-                        .height(colorPickerWidgetHeight)
-                        .fillMaxWidth(),
-                    sliderShape = defaultCornerRoundShape,
-                    isEnabled = true,
-                    sliderColor = SliderColor(
-                        enabledTrackColor = appColorSet.brightPanelBackground,
-                        enabledIndicationColor = appColorSet.brightPanelForeground
-                    ),
-                    sliderOrientation = SliderOrientation.Horizontal,
-                    sliderType = SliderType.Continuous,
-                    dragSensitivity = if (getPlatform().name.contains("Desktop")) 2.2f else 1.6f,
-                    valueRange = 0f..1f,
-                    currentValue = brightness.value,
-                    setCurrentValue = { newValue ->
-                        brightness.value = newValue
+                Box(Modifier, Alignment.Center) {
+                    FilledSlider(
+                        modifier = Modifier
+                            .height(colorPickerWidgetHeight)
+                            .fillMaxWidth(),
+                        sliderShape = defaultCornerRoundShape,
+                        isEnabled = true,
+                        sliderColor = SliderColor(
+                            enabledTrackColor = appColorSet.brightPanelBackground,
+                            enabledIndicationColor = appColorSet.brightPanelForeground
+                        ),
+                        sliderOrientation = SliderOrientation.Horizontal,
+                        sliderType = SliderType.Continuous,
+                        dragSensitivity = if (getPlatform().name.contains("Desktop")) 2.2f else 1.6f,
+                        valueRange = 0f..1f,
+                        currentValue = brightness.value,
+                        setCurrentValue = { newValue ->
+                            brightness.value = newValue
+                        }
+                    )
+                    Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                        LampLightLow("", Modifier.size(colorPickerWidgetHeight/1.7f))
+                        LampLightHigh("", Modifier.size(colorPickerWidgetHeight/1.7f))
                     }
-                )
+                }
             }
         }
 
