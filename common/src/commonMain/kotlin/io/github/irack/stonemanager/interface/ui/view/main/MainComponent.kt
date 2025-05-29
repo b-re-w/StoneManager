@@ -25,7 +25,11 @@ import io.github.irack.stonemanager.`interface`.ui.view.common.Footer
 import io.github.irack.stonemanager.`interface`.ui.view.common.Header
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.*
+import androidx.compose.ui.text.font.FontWeight
+import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain
+import io.github.irack.stonemanager.`interface`.ui.style.NeuPulsateEffectFlatButton
 
 @Composable
 fun MainHeader(paddingValues: PaddingValues = PaddingValues(0.dp, 6.dp, 0.dp, 26.dp)) {
@@ -70,30 +74,85 @@ fun MainTitlePanel(isViewLaunched: Boolean = false, modifier: Modifier = Modifie
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainDevicePanel(
     isViewLaunched: Boolean = false,
     modifier: Modifier = Modifier,
-    deviceName: MutableState<String> = rememberSaveable {
-        mutableStateOf("")
-    },
+    deviceName: MutableState<String> = rememberSaveable { mutableStateOf("") },
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
 ) {
-    val showDeviceStatePanel = rememberSaveable { mutableStateOf(false) }
+    // BottomSheet 상태와 표시 플래그
+    val sheetState = rememberModalBottomSheetState()
+    val showDeviceSheet = rememberSaveable { mutableStateOf(false) }
+
     Column(modifier, verticalArrangement, horizontalAlignment) {
         VolumeWheelDial(isViewLaunched)
-        AnimatedVisibility(showDeviceStatePanel.value) {
-            Column(Modifier.padding(bottom = 20.dp), verticalArrangement, horizontalAlignment) {
-                BodyText(LS.mainConnectedDevice)
-                StatusText(if (deviceName.value == "") LS.mainDeviceConnectionStatus else deviceName.value)
+
+        AnimatedVisibility(showDeviceSheet.value || isViewLaunched) {
+            Column(
+                Modifier
+                    .padding(bottom = 20.dp),
+                verticalArrangement,
+                horizontalAlignment
+            ) {
+                BodyText(
+                    text = LS.mainConnectedDevice,
+                    modifier = Modifier
+                        .clickable { showDeviceSheet.value = true }
+                        .padding(4.dp)
+                )
+                StatusText(
+                    text = deviceName.value.ifEmpty { LS.mainDeviceConnectionStatus }
+                )
             }
         }
     }
-    rememberCoroutineScope().launch {
+
+    LaunchedEffect(isViewLaunched) {
         if (isViewLaunched) {
             delay(2000)
-            showDeviceStatePanel.value = isViewLaunched
+        }
+    }
+
+    // 실제 BottomSheet 띄우기
+    if (showDeviceSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = { showDeviceSheet.value = false },
+            sheetState = sheetState
+        ) {
+            Surface(Modifier.padding(20.dp, 0.dp, 20.dp, 20.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DrawableMain.SelectDialog.Lamp(
+                        LS.mainConnectedDevice,
+                        Modifier.size(30.dp)
+                    )
+                    HeadText(
+                        LS.mainConnectedDevice,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+            }
+
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                BodyText("기기 이름: ${deviceName.value.ifEmpty { "미연결" }}")
+                BodyText("MAC 주소: AA:BB:CC:DD:EE:FF")
+                BodyText("최근 연결 시각: 2025-05-28 09:42")
+                BodyText(" ")
+                BodyText(" ")
+                BodyText(" ")
+            }
+
+
         }
     }
 }
