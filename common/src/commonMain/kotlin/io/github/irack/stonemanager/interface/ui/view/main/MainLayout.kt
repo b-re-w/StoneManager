@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.abhilash.apps.composecolorpicker.argbToHsv
 import com.abhilash.apps.composecolorpicker.rememberForeverScrollState
 import io.github.irack.stonemanager.`interface`.resource.drawable.DrawableMain
@@ -290,6 +291,78 @@ fun TimeSelectDialog() {
 }
 
 @Composable
-fun LicenseDialog() {
-
+fun LicenseDialog(showLicenseDialog: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }) {
+    if (showLicenseDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showLicenseDialog.value = false },
+            title = { Text("라이센스 목록") },
+            text = { Text("1. JetBrains Compose Multiplatform\n" +
+                    "라이브러리: compose.runtime, compose.ui, compose.foundation, compose.materialIconsExtended, compose.material3\n" +
+                    "\n" +
+                    "저작권: (C) 2020- JetBrains s.r.o. and contributors\n" +
+                    "\n" +
+                    "라이선스: Apache License 2.0\n" +
+                    "\n" +
+                    "2. kotlinx.serialization\n" +
+                    "라이브러리: kotlin.serialization\n" +
+                    "\n" +
+                    "저작권: (C) 2017-2024 JetBrains s.r.o. and contributors\n" +
+                    "\n" +
+                    "라이선스: Apache License 2.0\n" +
+                    "\n" +
+                    "3. Skiko\n" +
+                    "라이브러리: skiko.common\n" +
+                    "\n" +
+                    "저작권: (C) 2021 JetBrains s.r.o.\n" +
+                    "\n" +
+                    "라이선스: Apache License 2.0\n" +
+                    "\n" +
+                    "4. MOKO Resources\n" +
+                    "라이브러리: moko.resources\n" +
+                    "\n" +
+                    "저작권: (C) 2019 IceRock MAG Inc.\n" +
+                    "\n" +
+                    "라이선스: Apache License 2.0\n" +
+                    "\n" +
+                    "5. km-logging\n" +
+                    "라이브러리: kmlogging\n" +
+                    "\n" +
+                    "저작권: (C) 2021 GitHub contributors (Touchlab)\n" +
+                    "\n" +
+                    "라이선스: Apache License 2.0\n" +
+                    "\n" +
+                    "6. ComposeColorPicker\n" +
+                    "프로젝트 모듈: :lib:ComposeColorPicker:colorpicker\n" +
+                    "\n" +
+                    "저작권: 해당 모듈의 오픈소스 프로젝트 또는 직접 개발 여부에 따라 상이\n" +
+                    "\n" +
+                    "라이선스: 적용된 오픈소스 라이선스(예시: MIT, Apache 2.0 등)\n" +
+                    "\n" +
+                    "[출처/저작권 확인 필요]\n" +
+                    "\n" +
+                    "7. FilledSliderCompose\n" +
+                    "프로젝트 모듈: :lib:FilledSliderCompose:filled-slider-compose\n" +
+                    "\n" +
+                    "저작권: 해당 모듈의 오픈소스 프로젝트 또는 직접 개발 여부에 따라 상이\n" +
+                    "\n" +
+                    "라이선스: 적용된 오픈소스 라이선스(예시: MIT, Apache 2.0 등)\n" +
+                    "\n" +
+                    "[출처/저작권 확인 필요]\n" +
+                    "\n" +
+                    "8. compose-neumorphism\n" +
+                    "프로젝트 모듈: :lib:compose-neumorphism:neumorphic\n" +
+                    "\n" +
+                    "저작권: 해당 모듈의 오픈소스 프로젝트 또는 직접 개발 여부에 따라 상이\n" +
+                    "\n" +
+                    "라이선스: 적용된 오픈소스 라이선스(예시: MIT, Apache 2.0 등)\n" +
+                    "\n") },
+            confirmButton = {
+                TextButton(onClick = { showLicenseDialog.value = false }) {
+                    Text("닫기")
+                }
+            },
+            dismissButton = null,
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        )
+    }
 }
