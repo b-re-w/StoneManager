@@ -3,7 +3,10 @@ package io.github.irack.stonemanager.`interface`.ui.theme
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
@@ -16,13 +19,20 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import dev.icerock.moko.resources.compose.fontFamilyResource
-import io.github.irack.stonemanager.MR
 import io.github.irack.stonemanager.`interface`.ui.style.AutoSizeTextWithResizer
+import org.jetbrains.compose.resources.Font
+import stone_manager.common.generated.resources.Res
+import stone_manager.common.generated.resources.SUITE_Variable
 
 
 val suiteFontFamily: FontFamily
-    @Composable get() = fontFamilyResource(MR.fonts.SUITE.variable)
+    @Composable get() = FontFamily(
+        Font(Res.font.SUITE_Variable, weight = FontWeight.Light),
+        Font(Res.font.SUITE_Variable, weight = FontWeight.Normal),
+        Font(Res.font.SUITE_Variable, weight = FontWeight.Medium),
+        Font(Res.font.SUITE_Variable, weight = FontWeight.SemiBold),
+        Font(Res.font.SUITE_Variable, weight = FontWeight.Bold)
+    )
 
 
 val typography

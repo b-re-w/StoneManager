@@ -13,9 +13,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -99,36 +96,36 @@ fun NoRippleEffectBox(
  * No Ripple effect but with elevation animation Button
  * @see <a href="https://blog.canopas.com/jetpack-compose-cool-button-click-effects-c6bbecec7bcb">Cool Button Click Effects</a>
  */
-@Composable
-fun NoRippleEffectButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
-    shape: Shape = MaterialTheme.shapes.small,
-    border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    content: @Composable RowScope.() -> Unit
-) {
-    CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
-        Button(onClick, modifier, enabled, shape, colors, elevation, border, contentPadding, interactionSource, content)
-    }
-}
-
-private object NoRippleTheme : RippleTheme {
-    @Composable
-    override fun defaultColor() = Color.Unspecified
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleAlpha(
-        draggedAlpha = 0.0f,
-        focusedAlpha = 0.0f,
-        hoveredAlpha = 0.0f,
-        pressedAlpha = 0.0f
-    )
-}
+//@Composable
+//fun NoRippleEffectButton(
+//    onClick: () -> Unit,
+//    modifier: Modifier = Modifier,
+//    enabled: Boolean = true,
+//    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+//    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+//    shape: Shape = MaterialTheme.shapes.small,
+//    border: BorderStroke? = null,
+//    colors: ButtonColors = ButtonDefaults.buttonColors(),
+//    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+//    content: @Composable RowScope.() -> Unit
+//) {
+//    CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+//        Button(onClick, modifier, enabled, shape, colors, elevation, border, contentPadding, interactionSource, content)
+//    }
+//}
+//
+//private object NoRippleTheme : RippleTheme {
+//    @Composable
+//    override fun defaultColor() = Color.Unspecified
+//
+//    @Composable
+//    override fun rippleAlpha(): RippleAlpha = RippleAlpha(
+//        draggedAlpha = 0.0f,
+//        focusedAlpha = 0.0f,
+//        hoveredAlpha = 0.0f,
+//        pressedAlpha = 0.0f
+//    )
+//}
 
 
 

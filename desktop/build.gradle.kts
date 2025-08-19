@@ -3,15 +3,11 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetpack.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
-        }
-        withJava()
-    }
+    jvm()
     val osName = System.getProperty("os.name")
     val targetOs = when {
         osName == "Mac OS X" -> "macos"
@@ -55,20 +51,20 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "STONE Manager"
-            packageVersion = "1.0.0"
+            packageVersion = "1.1.0"
             macOS {
-                iconFile.set(project.file("icon.icns"))
+                iconFile.set(project.file("src/jvmMain/resources/icon.icns"))
                 installationPath = "/Applications/StoneManager"
                 bundleID = "io.github.irack.stonemanager.desktop"
             }
             windows {
-                iconFile.set(project.file("icon.ico"))
+                iconFile.set(project.file("src/jvmMain/resources/icon.ico"))
                 dirChooser = true
                 installationPath = "C:\\Program Files\\StoneManager"
                 perUserInstall = true
             }
             linux {
-                iconFile.set(project.file("icon.png"))
+                iconFile.set(project.file("src/jvmMain/resources/icon.png"))
                 installationPath = "/usr/local/bin/stonemanager"
             }
         }

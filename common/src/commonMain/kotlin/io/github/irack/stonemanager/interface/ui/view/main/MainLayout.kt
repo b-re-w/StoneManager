@@ -1,9 +1,7 @@
 package io.github.irack.stonemanager.`interface`.ui.view.main
 
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -17,7 +15,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.abhilash.apps.composecolorpicker.argbToHsv
@@ -30,7 +27,6 @@ import io.github.irack.stonemanager.`interface`.ui.theme.*
 import io.github.irack.stonemanager.`interface`.ui.unit.toList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.skia.paragraph.HeightMode
 import kotlin.math.ceil
 
 
