@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "io.github.irack.stonemanager.android"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         applicationId = "io.github.irack.stonemanager.android"
         minSdk = 24
-        targetSdk = 36
-        versionCode = 2
+        targetSdk = 37
+        versionCode = 3
         versionName = "1.1.0"
     }
     buildFeatures {

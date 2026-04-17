@@ -1,12 +1,12 @@
 [versions]
-agp = "8.11.1"
-kotlin = "2.2.10"
-kotlin-serialization = "1.9.0"
-compose = "1.8.2"
+agp = "8.11.2"
+kotlin = "2.3.20"
+kotlin-serialization = "1.11.0"
+compose = "1.9.0"
 compose-ui = "1.9.0"
 compose-compiler = "1.5.3"
-skiko = "0.9.22"
-androidx-activityCompose = "1.10.1"
+skiko = "0.144.5"
+androidx-activityCompose = "1.13.0"
 androidx-appcompat = "1.7.1"
 kmlogging = "2.0.3"
 
